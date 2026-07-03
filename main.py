@@ -1,12 +1,6 @@
-import requests
+from app.news_api import fetch_news
 
-url = "https://jsonplaceholder.typicode.com/posts/1"
+articles = fetch_news()
 
-response = requests.get(url)
-
-print("Status Code:", response.status_code)
-
-data = response.json()
-print(data["title"])
-print(data["body"])
-print(data["id"])
+for index, article in enumerate(articles, start=1):
+    print(f"{index}. {article['title']}")
