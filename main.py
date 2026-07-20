@@ -1,45 +1,40 @@
-from app.storage import read_news, save_summaries
-from app.processor import prepare_article
-from app.summarizer import summarize_article
-from app.utils import get_article_count
+import logging
+import logging_config
 
+from app.services import generate_summaries
+from app.storage import save_summaries
+from app.utils import get_article_count
+from app.news_api import fetch_news
 
 def main():
-    # Read saved news articles
-    articles = read_news()
 
-    # Get the number of articles to summarize
+    logging.info("Application started.")
+
+    category = "technology"
+
+    articles = fetch_news("us",category)
+
     count = get_article_count(len(articles))
+    count = get_article_count(10)
 
-    # Stop if the input is invalid
     if count is None:
         return
 
-    # List to store all summaries
-    summaries = []
+    summaries = generate_summaries(category, count)
 
-    # Generate summaries
-    for article in articles[:count]:
-
-        prepared_text = prepare_article(article)
-
-        summary = summarize_article(prepared_text)
-
-        print("=" * 70)
-        print(summary)
-        print("=" * 70)
-
-        summary_data = {
-            "title": article.get("title"),
-            "summary": summary
-        }
-
-        summaries.append(summary_data)
-
-    # Save all summaries after the loop
     save_summaries(summaries)
 
-    print("\n✅ All summaries have been saved successfully!")
+    logging.info("Summaries saved successfully.")
+
+    print("\nGenerated Summaries\n")
+
+    for summary in summaries:
+
+        print("=" * 70)
+        print(summary["title"])
+        print()
+        print(summary["summary"])
+        print("=" * 70)
 
 
 if __name__ == "__main__":

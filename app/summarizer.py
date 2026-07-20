@@ -1,3 +1,4 @@
+import logging
 import os
 import google.generativeai as genai
 from dotenv import load_dotenv
@@ -5,21 +6,20 @@ from config import GEMINI_MODEL
 
 load_dotenv()
 
-api_key = os.getenv("GEMINI_API_KEY")
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
-genai.configure(api_key=api_key)
 model = genai.GenerativeModel(GEMINI_MODEL)
 
+
 def summarize_article(text):
-    prompt = f"""
-    You are an AI news assistant.
+    try:
+        response = model.generate_content(text)
 
-    Summarize the following news article in 3-5 concise bullet points.
-    Keep the summary simple and easy to understand.
+        logging.info("Summary generated successfully.")
 
-    {text}
-    """
+        return response.text
 
-    response = model.generate_content(prompt)
+    except Exception as e:
+        logging.error(f"Gemini API Error: {e}")
 
-    return response.text
+        return "Unable to generate summary. Please try again later."
