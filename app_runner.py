@@ -2,7 +2,7 @@ import streamlit as st
 
 from app.services import generate_summaries
 from app.storage import save_summaries
-
+from datetime import datetime
 
 st.set_page_config(
     page_title="AI News Summarizer",
@@ -92,42 +92,48 @@ if generate:
     st.success("Summaries generated successfully!")
 
     for summary in summaries:
+        with st.container(border=True):
 
-        if summary["image"]:
-            col1, col2 = st.columns([1, 3])
-
-        with col1:
             if summary["image"]:
-                st.image(summary["image"], width=180)
+                col1, col2 = st.columns([1, 3])
 
-        with col2:
+            with col1:
+                if summary["image"]:
+                    st.image(summary["image"], width=180)
 
-            st.subheader(summary["title"])
+            with col2:
 
-            st.caption(
-                f"📰 {summary['source']} | 📅 {summary['published_at']}"
-            )
-
-            st.markdown("### 🤖 AI Summary")
-
-            summary_text = summary["summary"]
-
-            if len(summary_text) > 250:
-                summary_text = summary_text[:250] + "..."
-
-            st.write(summary_text)
-
-            with st.expander("📖 Read Full AI Summary"):
-                st.write(summary["summary"])
-
-            st.caption(
-                f"⏱️ Summary generated at: {summary['generated_at']}"
-            )
-
-            if summary["url"]:
-                st.link_button(
-                    "🔗 Read Full Article",
-                    summary["url"]
+                st.subheader(summary["title"])
+                published = datetime.fromisoformat(
+                    summary["published_at"].replace("Z", "+00:00")
                 )
 
-            st.divider()
+                formatted_date = published.strftime("%d %b %Y")
+
+                st.caption(
+                    f"📰 {summary['source']} | 📅 {formatted_date}"
+                )
+
+                st.markdown("### 🤖 AI Summary")
+
+                summary_text = summary["summary"]
+
+                if len(summary_text) > 250:
+                    summary_text = summary_text[:250] + "..."
+
+                st.write(summary_text)
+
+                with st.expander("📖 Read Full AI Summary"):
+                    st.write(summary["summary"])
+
+                st.caption(
+                    f"⏱️ Summary generated at: {summary['generated_at']}"
+                )
+
+                if summary["url"]:
+                    st.link_button(
+                        "🔗 Read Full Article",
+                        summary["url"]
+                    )
+
+                st.divider()
