@@ -7,7 +7,7 @@ from datetime import datetime
 st.set_page_config(
     page_title="AI News Summarizer",
     page_icon="📰",
-    layout="centered"
+    layout="wide"
 )
 
 st.sidebar.title("📌 About")
@@ -95,7 +95,7 @@ if generate:
         with st.container(border=True):
 
             if summary["image"]:
-                col1, col2 = st.columns([1, 3])
+                col1, col2 = st.columns([1.3, 3])
 
             with col1:
                 if summary["image"]:

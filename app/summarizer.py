@@ -15,18 +15,30 @@ def summarize_article(text):
     try:
 
         prompt = f"""
-            You are a professional news summarizer.
+            You are an AI News Assistant.
 
-            Read the following news article and produce a concise summary.
+            Analyze the following news article and return your response in EXACTLY this format.
 
-            Instructions:
-            - Keep the summary between 80 and 120 words.
-            - Explain only the important information.
-            - Do NOT rewrite the article.
-            - Do NOT repeat the title.
-            - Do NOT use headings like "Title", "Description", or "Content".
-            - Do NOT say "Here's a revised version".
-            - Write in a professional news style.
+            Summary:
+            (Write a concise summary in 100–150 words.)
+
+            Key Points:
+            - Point 1
+            - Point 2
+            - Point 3
+
+            Sentiment:
+            Positive / Neutral / Negative
+
+            Takeaway:
+            (One sentence describing the most important insight.)
+
+            Rules:
+            - Don't rewrite the article.
+            - Don't mention Title, Description or Content.
+            - Don't explain your reasoning.
+            - Keep it professional.
+            - Return only the requested format.
 
             Article:
             {text}
