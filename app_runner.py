@@ -7,23 +7,30 @@ from datetime import datetime
 st.set_page_config(
     page_title="AI News Summarizer",
     page_icon="📰",
-    layout="wide"
+    initial_sidebar_state="expanded"
 )
 
-st.sidebar.title("📌 About")
+st.markdown("""
+<style>
 
-st.sidebar.info(
-    """
-    AI News Summarizer
+.block-container{
+    max-width:1100px;
+    padding-top:2rem;
+    padding-bottom:2rem;
+}
 
-    Built using:
+div[data-testid="stVerticalBlockBorderWrapper"]{
+    border-radius:16px;
+    padding:18px;
+}
 
-    • Python
-    • Streamlit
-    • NewsAPI
-    • Google Gemini AI
-    """
-)
+h1{
+    margin-bottom:0.2rem;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
 
 st.title("📰 AI News Summarizer")
 
@@ -31,7 +38,7 @@ st.write(
     "Stay updated with AI-powered summaries of the latest news."
 )
 
-st.divider()
+st.write("")
 
 country_options = {
     "United States": "us",
@@ -41,38 +48,46 @@ country_options = {
     "Australia": "au"
 }
 
+st.subheader("⚙️ Controls")
+
 country_name = st.selectbox(
-    "Choose a Country",
-    list(country_options.keys())
-)
+        "🌍 Choose a Country",
+        list(country_options.keys())
+    )
 
 selected_country = country_options[country_name]
-st.caption(f"Country code being sent: {selected_country}")
 
 category = st.selectbox(
-    "Choose a News Category",
-    [
-        "Technology",
-        "Business",
-        "Health",
-        "Science",
-        "Sports",
-        "Entertainment"
-    ]
-)
+        "📰 Choose a News Category",
+        [
+            "Technology",
+            "Business",
+            "Health",
+            "Science",
+            "Sports",
+            "Entertainment"
+        ]
+    )
 
 count = st.slider(
-    "Number of Articles",
-    min_value=1,
-    max_value=10,
-    value=5
-)
+        "📄 Number of Articles",
+        min_value=1,
+        max_value=10,
+        value=5
+    )
 
-generate = st.button("🚀 Generate Summaries")
+st.write("")
+
+generate = st.button(
+        "🚀 Generate Summaries",
+        use_container_width=True
+    )
 
 if generate:
 
+
     with st.spinner("Generating summaries..."):
+
 
         summaries = generate_summaries(
             selected_country,
@@ -80,8 +95,6 @@ if generate:
             count
         )
 
-    st.write("Number of summaries:", len(summaries))
-    #st.write(summaries)
 
     if not summaries:
         st.warning("No articles were found.")
@@ -95,11 +108,11 @@ if generate:
         with st.container(border=True):
 
             if summary["image"]:
-                col1, col2 = st.columns([1.3, 3])
+                col1, col2 = st.columns([1.8, 3])
 
             with col1:
                 if summary["image"]:
-                    st.image(summary["image"], width=180)
+                    st.image(summary["image"], width=280)
 
             with col2:
 
@@ -136,4 +149,4 @@ if generate:
                         summary["url"]
                     )
 
-                st.divider()
+                st.write("")
