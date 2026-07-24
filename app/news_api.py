@@ -4,21 +4,60 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def fetch_news():
+api_key = os.getenv("NEWS_API_KEY")
 
-    api_key = os.getenv("NEWS_API_KEY")
 
+def fetch_news(country,category):
     url = "https://newsapi.org/v2/top-headlines"
 
     params = {
-        "country": "us",
-        "apiKey": api_key
-    }
+    "country": country,
+    "category": category,
+    "apiKey": api_key
+}
+
+    print("Country:", country)
+    print("Category:", category)
+    print("Params:", params)
 
     response = requests.get(url, params=params)
 
-    data = response.json()
+    response.raise_for_status()
 
-    articles = data["articles"]
+    data = response.json()
+    print(data)
+
+    articles = data.get("articles", [])
 
     return articles
+
+def search_news(keyword):
+    url = "https://newsapi.org/v2/everything"
+
+    params = {
+        "q": keyword,
+        "language": "en",
+        "sortBy": "publishedAt",
+        "apiKey": api_key
+    }
+
+    print("Keyword:", keyword)
+    print("Params:", params)
+
+    response = requests.get(url, params=params)
+
+    response.raise_for_status()
+
+    data = response.json()
+
+    print(data)
+
+    articles = data.get("articles", [])
+
+    return articles
+
+if __name__ == "__main__":
+
+    articles = fetch_news("us", "technology")
+
+    print(f"Number of articles: {len(articles)}")
