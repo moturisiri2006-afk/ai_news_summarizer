@@ -4,10 +4,19 @@ from app.processor import prepare_article
 from app.summarizer import summarize_article
 
 
-def generate_summaries(country,category, count):
+def generate_summaries(country,category,keyword, count):
 
 
-    articles = news_api.fetch_news(country, category)
+    if keyword.strip():
+
+        articles = news_api.search_news(keyword)
+
+    else:
+
+        articles = news_api.fetch_news(
+            country,
+            category
+        )
     if not articles:
         return []
 
@@ -32,3 +41,8 @@ def generate_summaries(country,category, count):
         summaries.append(summary_data)
 
     return summaries
+
+import inspect
+
+print("=== SERVICES LOADED ===")
+print(inspect.signature(generate_summaries))

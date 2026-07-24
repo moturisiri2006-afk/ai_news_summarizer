@@ -1,8 +1,8 @@
 import streamlit as st
-
 from app.services import generate_summaries
 from app.storage import save_summaries
 from datetime import datetime
+import inspect
 
 st.set_page_config(
     page_title="AI News Summarizer",
@@ -69,6 +69,11 @@ category = st.selectbox(
         ]
     )
 
+keyword = st.text_input(
+    "🔍 Search News (Optional)",
+    placeholder="Search for any topic, company, person or event..."
+)
+
 count = st.slider(
         "📄 Number of Articles",
         min_value=1,
@@ -92,6 +97,7 @@ if generate:
         summaries = generate_summaries(
             selected_country,
             category.lower(),
+            keyword,
             count
         )
 
@@ -107,8 +113,8 @@ if generate:
     for summary in summaries:
         with st.container(border=True):
 
-            if summary["image"]:
-                col1, col2 = st.columns([1.8, 3])
+            
+            col1, col2 = st.columns([1.8, 3])
 
             with col1:
                 if summary["image"]:
