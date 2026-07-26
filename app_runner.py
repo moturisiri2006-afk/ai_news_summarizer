@@ -93,13 +93,16 @@ if generate:
 
     with st.spinner("Generating summaries..."):
 
-
-        summaries = generate_summaries(
+        result = generate_summaries(
             selected_country,
             category.lower(),
             keyword,
             count
         )
+        
+
+        summaries = result["summaries"]
+        trending_topics = result["trending_topics"]
 
 
     if not summaries:
@@ -109,6 +112,11 @@ if generate:
     save_summaries(summaries)
 
     st.success("Summaries generated successfully!")
+    st.sidebar.markdown("---")
+    st.sidebar.subheader("📰 Top News Topics")
+
+    for topic in trending_topics:
+        st.sidebar.write(f"📌 {topic}")
 
     for summary in summaries:
         with st.container(border=True):

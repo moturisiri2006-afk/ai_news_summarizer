@@ -2,6 +2,7 @@ from datetime import datetime
 import app.news_api as news_api
 from app.processor import prepare_article
 from app.summarizer import summarize_article
+from app.trending import extract_trending_topics
 
 
 def generate_summaries(country,category,keyword, count):
@@ -17,8 +18,20 @@ def generate_summaries(country,category,keyword, count):
             country,
             category
         )
+
+    print("Articles fetched:", len(articles))
+
     if not articles:
         return []
+
+    trending_topics = extract_trending_topics(articles)
+
+    print("Trending topics:", trending_topics)
+    
+    if not articles:
+        return []
+
+    trending_topics = extract_trending_topics(articles)
 
     summaries = []
 
@@ -40,9 +53,8 @@ def generate_summaries(country,category,keyword, count):
 
         summaries.append(summary_data)
 
-    return summaries
+    return {
+    "summaries": summaries,
+    "trending_topics": trending_topics
+}
 
-import inspect
-
-print("=== SERVICES LOADED ===")
-print(inspect.signature(generate_summaries))
