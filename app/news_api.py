@@ -16,18 +16,28 @@ def fetch_news(country,category):
     "apiKey": api_key
 }
 
-    print("Country:", country)
-    print("Category:", category)
-    print("Params:", params)
 
     response = requests.get(url, params=params)
 
     response.raise_for_status()
 
     data = response.json()
-    print(data)
 
     articles = data.get("articles", [])
+
+    if not articles:
+
+        country_names = {
+            "in": "India",
+            "us": "United States",
+            "gb": "United Kingdom",
+            "ca": "Canada",
+            "au": "Australia"
+        }
+
+        search_query = f"{category} {country_names.get(country, country)}"
+
+        return search_news(search_query)
 
     return articles
 

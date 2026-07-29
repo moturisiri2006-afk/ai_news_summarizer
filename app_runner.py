@@ -1,8 +1,9 @@
 import streamlit as st
 from app.services import generate_summaries
+import app.services
 from app.storage import save_summaries
 from datetime import datetime
-import inspect
+
 
 st.set_page_config(
     page_title="AI News Summarizer",
@@ -51,14 +52,14 @@ country_options = {
 st.subheader("⚙️ Controls")
 
 country_name = st.selectbox(
-        "🌍 Choose a Country",
+        "🌍 Country",
         list(country_options.keys())
     )
 
 selected_country = country_options[country_name]
 
 category = st.selectbox(
-        "📰 Choose a News Category",
+        "📰 Category",
         [
             "Technology",
             "Business",
@@ -70,12 +71,12 @@ category = st.selectbox(
     )
 
 keyword = st.text_input(
-    "🔍 Search News (Optional)",
-    placeholder="Search for any topic, company, person or event..."
+    "🔍 Search (Optional)",
+    placeholder="Search news by topic, company, person, or event..."
 )
 
 count = st.slider(
-        "📄 Number of Articles",
+        "📄 Articles to Summarize",
         min_value=1,
         max_value=10,
         value=5
@@ -94,15 +95,14 @@ if generate:
     with st.spinner("Generating summaries..."):
 
         result = generate_summaries(
-            selected_country,
-            category.lower(),
-            keyword,
-            count
-        )
-        
-
+        selected_country,
+        category.lower(),
+        keyword,
+        count
+    )
         summaries = result["summaries"]
         trending_topics = result["trending_topics"]
+
 
 
     if not summaries:
@@ -112,7 +112,10 @@ if generate:
     save_summaries(summaries)
 
     st.success("Summaries generated successfully!")
+
+    st.sidebar.title("📰 AI News Summarizer")
     st.sidebar.markdown("---")
+
     st.sidebar.subheader("📰 Top News Topics")
 
     for topic in trending_topics:

@@ -9,7 +9,10 @@ def extract_keywords(title):
         "A", "An", "For", "With", "From",
         "Into", "After", "Before", "During",
         "Over", "Under", "And", "Or", "Of",
-        "To", "In", "On", "By"
+        "To", "In", "On", "By","New",
+    "Week","Month","Today","Tomorrow","Yesterday",
+    "July","August","September","October","November","December","January","February","March","April","May", "June",
+    "Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"
     }
     title = title.split(" - ")[0]
 
@@ -42,8 +45,8 @@ def extract_trending_topics(articles):
 
     stop_words = {
     "the", "a", "an", "and", "or", "of", "to","today"
-    "in", "on", "for", "with", "at", "by",
-    "from", "is", "are", "was", "were","down","up","Live","Latest","Everything","Update"
+    "in", "on", "for", "with", "at", "by","when","what","why"
+    "from", "is", "are", "was", "were","down","up","Live","Latest","Everything","Update","how"
 
     "new", "today", "latest", "breaking",
     "after", "before", "during",
