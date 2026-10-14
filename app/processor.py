@@ -1,16 +1,31 @@
+
 def prepare_article(article):
-    title = article.get("title") or "No title available"
-    description = article.get("description") or "No description available"
-    content = article.get("content") or "No content available"
+    """Prepare the available article text for summarization."""
 
-    prepared_text = f"""Title:
-{title}
+    title = (article.get("title") or "").strip()
+    description = (article.get("description") or "").strip()
+    content = (article.get("content") or "").strip()
 
-Description:
-{description}
+    # Remove duplicate text fields and empty values.
+    parts = []
+    seen = set()
 
-Content:
-{content}
-"""
+    for label, value in [
+        ("Title", title),
+        ("Description", description),
+        ("Content", content),
+    ]:
+        if not value:
+            continue
 
-    return prepared_text
+        # NewsAPI may append a truncation marker such as [+1234 chars].
+        cleaned = value.rsplit("[+", 1)[0].strip()
+
+        if cleaned and cleaned.lower() not in seen:
+            parts.append(f"{label}:\n{cleaned}")
+            seen.add(cleaned.lower())
+
+    if not parts:
+        return ""
+
+    return "\n\n".join(parts)

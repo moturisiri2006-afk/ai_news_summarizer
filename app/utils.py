@@ -16,3 +16,17 @@ def get_article_count(total_articles):
     except ValueError:
         print("Please enter a valid number.")
         return None
+
+def clean_display_text(text):
+        """
+        Clean news text before displaying it with Streamlit Markdown.
+        """
+
+        if not text:
+            return ""
+
+        return (
+            text
+            .replace("$", r"\$")
+            .replace("`", "")
+        )

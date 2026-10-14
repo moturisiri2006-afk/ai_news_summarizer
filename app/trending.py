@@ -1,70 +1,70 @@
-import re 
+import re
+from collections import Counter
+
+
+STOP_WORDS = {
+    "the", "a", "an", "and", "or", "of", "to", "in", "on",
+    "for", "with", "at", "by", "from", "into", "after",
+    "before", "during", "over", "under", "is", "are", "was",
+    "were", "this", "that", "these", "those", "how", "what",
+    "why", "when", "where", "who",
+
+    "new", "latest", "today", "tomorrow", "yesterday",
+    "breaking", "live", "update", "updates",
+
+    "says", "said", "say", "according", "report", "reports",
+    "announces", "announce", "announced", "launches", "launch",
+    "launched", "reveals", "revealed", "shows", "wins", "won",
+    "beats",
+
+    "will", "can", "could", "may", "might", "its", "their",
+    "his", "her", "our", "your", "about", "than", "more",
+
+    # Months
+    "january", "february", "march", "april", "may", "june",
+    "july", "august", "september", "october", "november",
+    "december",
+
+    # Days
+    "monday", "tuesday", "wednesday", "thursday", "friday",
+    "saturday", "sunday",
+}
+
+
 def extract_keywords(title):
     """
-    Extract meaningful keywords from a single news title.
+    Extract meaningful keywords from a news title.
     """
 
-    title_stop_words = {
-        "The", "This", "That", "These", "Those",
-        "A", "An", "For", "With", "From",
-        "Into", "After", "Before", "During",
-        "Over", "Under", "And", "Or", "Of",
-        "To", "In", "On", "By","New",
-    "Week","Month","Today","Tomorrow","Yesterday",
-    "July","August","September","October","November","December","January","February","March","April","May", "June",
-    "Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"
-    }
+    if not title:
+        return []
+
     title = title.split(" - ")[0]
+
+    words = re.findall(r"\b[a-zA-Z][a-zA-Z0-9-]+\b", title.lower())
 
     keywords = []
 
-    words = re.findall(r"\b[\w-]+\b", title)
-
     for word in words:
 
-        if word in title_stop_words:
+        if word in STOP_WORDS:
             continue
 
-        if len(word) == 1:
+        if len(word) < 3:
             continue
 
-        if word[0].isupper():
-            keywords.append(word)
-
-        elif any(char.isdigit() for char in word):
-            keywords.append(word)
+        keywords.append(word)
 
     return keywords
 
 
 def extract_trending_topics(articles):
     """
-    Extract the most frequently occurring meaningful words
-    from article titles.
+    Extract the most frequently occurring meaningful
+    keywords from article titles.
     """
 
-    stop_words = {
-    "the", "a", "an", "and", "or", "of", "to","today"
-    "in", "on", "for", "with", "at", "by","when","what","why"
-    "from", "is", "are", "was", "were","down","up","Live","Latest","Everything","Update","how"
-
-    "new", "today", "latest", "breaking",
-    "after", "before", "during",
-
-    "says", "said", "say",
-
-    "launches", "launch", "launched",
-    "announces", "announce", "announced",
-
-    "reveals", "revealed",
-    "wins", "won",
-    "beats",
-    "shows",
-    "report",
-    "reports",
-    "according"
-}
-    word_count = {}
+    word_count = Counter()
 
     for article in articles:
         title = article.get("title", "")
@@ -72,16 +72,10 @@ def extract_trending_topics(articles):
         keywords = extract_keywords(title)
 
         for keyword in keywords:
+            word_count[keyword] += 1
 
-            if keyword in word_count:
-                word_count[keyword] += 1
-            else:
-                word_count[keyword] = 1
-
-    sorted_topics = sorted(
-        word_count.items(),
-        key=lambda item: item[1],
-        reverse=True
-    )
-
-    return [topic for topic, count in sorted_topics[:5]]
+    return [
+        topic
+        for topic, count in word_count.most_common(5)
+        if count >= 1
+    ]
