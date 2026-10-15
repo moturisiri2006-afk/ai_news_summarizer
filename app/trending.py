@@ -52,12 +52,14 @@ def extract_keywords(title):
 
     words = re.findall(r"\b[a-z][a-z0-9-]*\b", title)
 
+    
     return [
         word for word in words
-        if len(word) >= 3
+        if (len(word) >= 3 or word == "ai")
         and word not in STOP_WORDS
         and not word.isdigit()
     ]
+
 
 
 def extract_trending_topics(articles):
