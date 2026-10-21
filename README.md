@@ -65,7 +65,7 @@ AI-News-Summarizer/
 │   └── utils.py             # Shared utility functions
 │
 ├── tests/
-│   ├── test_news_api.py     # News API behavior tests
+│   ├── test_news.py     # News API behavior tests
 │   ├── test_processor.py    # Article processing tests
 │   └── test_trending.py     # Trending topic tests
 │
