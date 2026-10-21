@@ -18,6 +18,7 @@ logs/
 # Local generated data
 data/summaries.json
 data/bookmarks.json
+data/news.json
 
 # Jupyter
 .ipynb_checkpoints/
